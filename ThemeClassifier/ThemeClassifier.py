@@ -36,7 +36,7 @@ class ThemeClassifier:
         
         # Run Model
         theme_output = self.theme_classifier(  # ✅ Access model from self.theme_classifier
-            script_batches[:2],
+            script_batches,
             self.theme_list,
             multi_label=True
         )
@@ -59,7 +59,6 @@ class ThemeClassifier:
             return df 
 
         df = load_subs_datasets(df_path)
-        df = df.head(2)
 
         output_themes = df["script"].apply(self.get_themes_inference)
         themes_df = pd.DataFrame(output_themes.tolist())

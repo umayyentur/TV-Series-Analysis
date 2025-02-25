@@ -5,6 +5,12 @@ import pathlib
 folder_path = pathlib.Path(__file__).parent.resolve()
 sys.path.append(os.path.join(folder_path,'../'))
 from ThemeClassifier import ThemeClassifier
+from NER_Character import NamedEntityRecognizer, CharacterNetworkGenerator
+from text_classification import AttackClassifier
+from character_chatbot import CharacterChatBot
+from dotenv import load_dotenv
+load_dotenv()
+
 
 def get_themes(theme_list_str, subtitle_path, save_path):
     theme_list = theme_list_str.split(",")
@@ -26,29 +32,88 @@ def get_themes(theme_list_str, subtitle_path, save_path):
         width=400,
         height=260
     )
-    
     return output_chart
+
+
+def get_character_network(subtitles_path,ner_path):
+    ner = NamedEntityRecognizer()
+    ner_df = ner.get_ners(subtitles_path,ner_path)
+    character_network_generator = CharacterNetworkGenerator()
+    relationship_df = character_network_generator.generate_character_network(ner_df)
+    html = character_network_generator.draw_network_graph(relationship_df)
+    return html
+    
+
+def classify_text(text_classifcation_model,text_classifcation_data_path,text_to_classify):
+    attack_classifier = AttackClassifier(model_path = text_classifcation_model,
+                                       data_path = text_classifcation_data_path,
+                                       huggingface_token = os.getenv('HUGGINGFACE_TOKEN'))
+    
+    output = attack_classifier.classify_attack(text_to_classify)
+    output = output[0]
+
+    return output
+
+def chat_with_character_chatbot(message, history):
+    character_chatbot = CharacterChatBot("umayyen/Naruto_Llama-3-8B",
+                                         huggingface_token = os.getenv('HUGGINGFACE_TOKEN')
+                                         )
+
+    output = character_chatbot.chat(message, history)
+    output = output['content'].strip()
+    return output
 
 def main():
     with gr.Blocks() as iface:
+        # Theme Classification Section
         with gr.Row():
             with gr.Column():
-                gr.HTML("<h1>Theme Classification (Zero Shot Classisifers)</h1>")
+                gr.HTML("<h1>Theme Classification (Zero Shot Claasifiers)</h1>")
                 with gr.Row():
                     with gr.Column():
                         plot = gr.BarPlot()
-                    
                     with gr.Column():
                         theme_list = gr.Textbox(label="Themes")
-                        subtitle_path = gr.Textbox(label="Subtitle or script Path")
+                        subtitles_path = gr.Textbox(label="Subtitles or script Path")
                         save_path = gr.Textbox(label="Save Path")
-                        get_themes_button = gr.Button("Get Themes")
-                        get_themes_button.click(get_themes,
-                                                inputs=[theme_list, subtitle_path, save_path],
-                                                outputs=[plot])
-                    
-                    
+                        get_themes_button =gr.Button("Get Themes")
+                        get_themes_button.click(get_themes, inputs=[theme_list,subtitles_path,save_path], outputs=[plot])
+
+        # Character Network Section
+        with gr.Row():
+            with gr.Column():
+                gr.HTML("<h1>Character Network (NERs and Graphs)</h1>")
+                with gr.Row():
+                    with gr.Column():
+                        network_html = gr.HTML()
+                    with gr.Column():
+                        subtitles_path = gr.Textbox(label="Subtutles or Script Path")
+                        ner_path = gr.Textbox(label="NERs save path")
+                        get_network_graph_button = gr.Button("Get Character Network")
+                        get_network_graph_button.click(get_character_network, inputs=[subtitles_path,ner_path], outputs=[network_html])
+                        
+        # Text Classification Section                
+        with gr.Row():
+            with gr.Column():
+                gr.HTML("<h1>Text Classification with LLMs</h1>")
+                with gr.Row():
+                    with gr.Column():
+                        text_classification_output = gr.Textbox(label="Text Classification Output")
+                    with gr.Column():
+                        text_classifcation_model = gr.Textbox(label='Model Path')
+                        text_classifcation_data_path = gr.Textbox(label='Data Path')
+                        text_to_classify = gr.Textbox(label='Text input')
+                        classify_text_button = gr.Button("Clasify Text (Jutsu)")
+                        classify_text_button.click(classify_text, inputs=[text_classifcation_model,text_classifcation_data_path,text_to_classify], outputs=[text_classification_output])
+
+        with gr.Row():
+            with gr.Column():
+                gr.HTML("<h1>Character Chatbot</h1>")
+                gr.ChatInterface(chat_with_character_chatbot)
+
+
     iface.launch(share=True)
-    
+            
+
 if __name__ == '__main__':
     main()
