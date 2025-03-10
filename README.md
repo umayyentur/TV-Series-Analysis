@@ -1,7 +1,7 @@
 # AI-Powered TV Series Analysis System
 
 ## Overview
-This project focuses on building an AI-powered NLP system to analyze TV series scripts using state-of-the-art natural language processing (NLP) models. The system incorporates multiple AI models, data scraping techniques, and a user-friendly interface powered by Gradio.
+This project focuses on building an AI-powered NLP system to analyze TV series scripts using state-of-the-art natural language processing (NLP) models. The system incorporates multiple AI models, data scraping techniques, and a user-friendly interface powered by Gradio. The goal is to extract insights from TV series, including character relationships, recurring themes, and chatbot-based interactions.
 
 ## Features
 - **Text Classification**: Uses Hugging Face’s zero-shot classification model to identify key themes in a series.
@@ -10,6 +10,14 @@ This project focuses on building an AI-powered NLP system to analyze TV series s
 - **Data Scraping**: Uses Scrapy to collect subtitle and transcript datasets from online sources.
 - **Transformer-Based Analysis**: Leverages modern transformer models for text processing and classification.
 - **User Interface**: Provides an interactive web UI using Gradio.
+
+## Dataset Details
+- **Source**: Scraped subtitle and transcript datasets from publicly available online sources.
+- **Structure**: Each dataset contains:
+  - Dialogue text
+  - Character metadata
+  - Timestamped interactions
+- **Preprocessing**: Data is cleaned, tokenized, and structured for machine learning models.
 
 ## Project Workflow
 1. **Data Collection & Preprocessing**
@@ -45,6 +53,7 @@ This project focuses on building an AI-powered NLP system to analyze TV series s
   - Pandas & NumPy for data processing
   - Gradio for UI development
   - PyTorch for deep learning
+  - Matplotlib & NetworkX for character network visualization
 
 ## How to Use
 1. Clone the repository:
@@ -73,17 +82,25 @@ This project focuses on building an AI-powered NLP system to analyze TV series s
    python gradio_app.py
    ```
 
+## Evaluation Metrics
+- **Accuracy**: Performance of text classification and theme detection models.
+- **F1 Score**: Evaluation of named entity recognition (NER) performance.
+- **BLEU Score**: Assessment of chatbot response quality compared to original dialogues.
+- **Graph Metrics**: Measures such as centrality and clustering for character network analysis.
+
+## Use Cases
+- **Content Analysis**: Understanding recurring themes and sentiments in TV series.
+- **Fan Engagement**: Interactive chatbot that mimics favorite characters.
+- **Academic Research**: Analyzing character dynamics and storytelling structures.
+- **Screenwriting Assistance**: Helping writers analyze and refine scripts using AI insights.
+
 ## Future Improvements
 - Expand character network analysis with advanced relationship mapping.
 - Integrate multi-language support for NLP models.
 - Optimize chatbot responses using reinforcement learning.
 - Enhance the UI with additional visualization features.
+- Develop real-time subtitle analysis for live TV streaming.
 
-## Contributors
-- **Author:** [Your Name]
-- **Contact:** [Your Email]
-- **Repository:** [GitHub URL]
 
 ## License
-This project is licensed under the Apache License
-
+This project is licensed under the Apache License.
