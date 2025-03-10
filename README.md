@@ -85,5 +85,5 @@ This project focuses on building an AI-powered NLP system to analyze TV series s
 - **Repository:** [GitHub URL]
 
 ## License
-This project is licensed under the MIT License.
+This project is licensed under the Apache License
 
